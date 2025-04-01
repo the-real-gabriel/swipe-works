@@ -1,10 +1,17 @@
 
 import React, { useState, useRef } from 'react';
-import { motion, PanInfo, useAnimation } from 'framer-motion';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Task } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
+import { Star, Clock, DollarSign } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import TaskDetailModal from './TaskDetailModal';
 
 interface SwipeCardProps {
   task: Task;
@@ -14,91 +21,71 @@ interface SwipeCardProps {
 
 const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const controls = useAnimation();
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const constraintsRef = useRef(null);
 
-  const handleDragEnd = async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (event: React.PointerEvent, info: { offset: { x: number } }) => {
     const threshold = 100;
     
     if (info.offset.x > threshold) {
-      await controls.start({ x: 500, opacity: 0, transition: { duration: 0.3 } });
       onSwipeRight();
     } else if (info.offset.x < -threshold) {
-      await controls.start({ x: -500, opacity: 0, transition: { duration: 0.3 } });
       onSwipeLeft();
-    } else {
-      controls.start({ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } });
     }
     
     setIsDragging(false);
   };
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      'logo': 'bg-blue-500',
-      'banner': 'bg-green-500',
-      'social-media': 'bg-purple-500',
-      'flyer': 'bg-yellow-500',
-      'business-card': 'bg-indigo-500',
-      'illustration': 'bg-pink-500',
-      'other': 'bg-gray-500'
+  const getFormattedCategory = (category: string) => {
+    const formatted = {
+      'logo': 'Logo Design',
+      'banner': 'Banner Design',
+      'social-media': 'Social Media Graphic',
+      'flyer': 'Flyer Design',
+      'business-card': 'Business Card Design',
+      'illustration': 'Illustration',
+      'other': 'Other Design'
     };
     
-    return colors[category] || colors.other;
+    return formatted[category as keyof typeof formatted] || 'Design Task';
   };
 
   return (
     <div ref={constraintsRef} className="swipe-card-container">
-      <motion.div
+      <div 
         className="swipe-card"
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.7}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={handleDragEnd}
-        animate={controls}
+        onPointerDown={() => setIsDragging(true)}
         style={{ 
-          rotateZ: isDragging ? 0 : 0,
           zIndex: isDragging ? 10 : 1
         }}
-        whileTap={{ scale: 1.02 }}
       >
-        <Card className="w-full h-full shadow-lg overflow-hidden flex flex-col">
+        <Card className="w-full h-full shadow-lg overflow-hidden flex flex-col cursor-pointer"
+          onClick={() => setDetailsOpen(true)}>
           <CardHeader className="pb-3">
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg font-bold">{task.title}</CardTitle>
-              <Badge className={`${getCategoryColor(task.category)} text-white`}>
-                {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
-              </Badge>
-            </div>
-            <div className="text-sm text-gray-500">
-              Posted {formatDistanceToNow(new Date(task.createdAt), { addSuffix: true })}
-            </div>
+            {/* Task Type at the top in bold, large font */}
+            <h3 className="font-bold text-xl text-primary">
+              {getFormattedCategory(task.category)}
+            </h3>
           </CardHeader>
           
           <CardContent className="flex-grow">
             <div className="space-y-4">
-              <p className="text-sm text-gray-700">{task.description}</p>
-              
-              <div className="grid grid-cols-2 gap-2 mt-4">
-                <div className="bg-gray-50 p-2 rounded">
-                  <span className="text-xs text-gray-500 block">Budget</span>
-                  <span className="font-semibold text-primary">${task.paymentAmount}</span>
+              {/* Payout and Deadline side by side */}
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center gap-1">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  <span className="font-medium">${task.paymentAmount}</span>
                 </div>
-                <div className="bg-gray-50 p-2 rounded">
-                  <span className="text-xs text-gray-500 block">Due</span>
-                  <span className="font-semibold text-gray-700">
-                    {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
-                  </span>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4 text-orange-500" />
+                  <span>Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}</span>
                 </div>
-                <div className="bg-gray-50 p-2 rounded">
-                  <span className="text-xs text-gray-500 block">Size</span>
-                  <span className="font-semibold text-gray-700">{task.dimensions}</span>
-                </div>
-                <div className="bg-gray-50 p-2 rounded">
-                  <span className="text-xs text-gray-500 block">Assets</span>
-                  <span className="font-semibold text-gray-700">{task.assets.length || 'None'}</span>
-                </div>
+              </div>
+
+              {/* Client Reputation */}
+              <div className="flex justify-end items-center text-sm gap-1">
+                <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                <span className="font-medium">4.8</span>
               </div>
             </div>
           </CardContent>
@@ -114,7 +101,16 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
             </div>
           </CardFooter>
         </Card>
-      </motion.div>
+      </div>
+
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl">{task.title}</DialogTitle>
+          </DialogHeader>
+          <TaskDetailModal task={task} onAccept={onSwipeRight} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

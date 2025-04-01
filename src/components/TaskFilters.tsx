@@ -1,113 +1,152 @@
 
-import React from 'react';
-import { TaskCategory } from '@/types';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon, FilterX } from 'lucide-react';
+import { TaskCategory } from '@/types';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 interface TaskFiltersProps {
-  onFilter: (category?: TaskCategory, minAmount?: number, maxAmount?: number, deadline?: Date) => void;
+  onFilter: (
+    category?: TaskCategory,
+    minAmount?: number,
+    maxAmount?: number,
+    deadline?: Date
+  ) => void;
 }
 
 const TaskFilters: React.FC<TaskFiltersProps> = ({ onFilter }) => {
-  const [category, setCategory] = React.useState<TaskCategory | undefined>(undefined);
-  const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 200]);
-  const [deadline, setDeadline] = React.useState<string>('');
+  const { register, handleSubmit, reset } = useForm();
+  const [category, setCategory] = useState<TaskCategory | undefined>(undefined);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
-  const handleFilter = () => {
-    const deadlineDate = deadline ? new Date(deadline) : undefined;
-    onFilter(category, priceRange[0], priceRange[1], deadlineDate);
-  };
-
-  const clearFilters = () => {
+  const handleReset = () => {
     setCategory(undefined);
     setPriceRange([0, 200]);
-    setDeadline('');
+    setDate(undefined);
+    reset();
     onFilter();
   };
 
-  const categoryOptions: { value: TaskCategory; label: string }[] = [
-    { value: 'logo', label: 'Logo Design' },
-    { value: 'banner', label: 'Banner' },
-    { value: 'social-media', label: 'Social Media Graphics' },
-    { value: 'flyer', label: 'Flyer' },
-    { value: 'business-card', label: 'Business Card' },
-    { value: 'illustration', label: 'Illustration' },
-    { value: 'other', label: 'Other' },
-  ];
+  const handleFilter = () => {
+    onFilter(
+      category,
+      priceRange[0],
+      priceRange[1],
+      date
+    );
+  };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border">
-      <h3 className="font-medium text-lg mb-4">Filter Tasks</h3>
-
-      <div className="space-y-4">
-        <div>
-          <label className="text-sm font-medium mb-1 block">Category</label>
+    <Card className="w-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex justify-between items-center">
+          <span>Filter Tasks</span>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleReset}
+            className="h-8 px-2 text-xs"
+          >
+            <FilterX className="h-3.5 w-3.5 mr-1" />
+            Reset
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
           <Select 
             value={category} 
-            onValueChange={(value) => setCategory(value as TaskCategory)}
+            onValueChange={(value) => setCategory(value as TaskCategory || undefined)}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="All Categories" />
+            <SelectTrigger id="category">
+              <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categoryOptions.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
+              <SelectItem value="all">All categories</SelectItem>
+              <SelectItem value="logo">Logo Design</SelectItem>
+              <SelectItem value="banner">Banner Design</SelectItem>
+              <SelectItem value="social-media">Social Media</SelectItem>
+              <SelectItem value="flyer">Flyer</SelectItem>
+              <SelectItem value="business-card">Business Card</SelectItem>
+              <SelectItem value="illustration">Illustration</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div>
-          <label className="text-sm font-medium mb-1 block">
-            Price Range: ${priceRange[0]} - ${priceRange[1]}
-          </label>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <Label>Price Range</Label>
+            <span className="text-sm text-gray-500">
+              ${priceRange[0]} - ${priceRange[1]}
+            </span>
+          </div>
+          
           <Slider
-            defaultValue={[0, 200]}
+            variant="range"
+            value={[priceRange[0], priceRange[1]]}
+            min={0}
             max={200}
             step={5}
-            value={priceRange}
-            onValueChange={(value) => setPriceRange(value as [number, number])}
-            className="my-4"
+            onValueChange={(value) => setPriceRange([value[0], value[1]])}
+            className="py-4"
           />
         </div>
 
-        <div>
-          <label className="text-sm font-medium mb-1 block">Deadline Before</label>
-          <input
-            type="date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
+        <div className="space-y-2">
+          <Label>Deadline</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP") : "Select a date"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
-        <div className="flex gap-2 pt-2">
-          <Button 
-            onClick={handleFilter} 
-            className="flex-1 bg-primary hover:bg-primary-dark"
-          >
-            Apply Filters
-          </Button>
-          <Button 
-            onClick={clearFilters} 
-            variant="outline" 
-            className="flex-1"
-          >
-            Clear
-          </Button>
-        </div>
-      </div>
-    </div>
+        <Button 
+          onClick={handleFilter} 
+          className="w-full bg-primary hover:bg-primary-dark"
+        >
+          Apply Filters
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 
