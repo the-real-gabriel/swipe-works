@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import PostTask from "./pages/PostTask";
+import CreateDesignTask from "./pages/CreateDesignTask";
 import TaskDetail from "./pages/TaskDetail";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -42,6 +43,7 @@ const App = () => (
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/tasks/:id" element={<TaskDetail />} />
                     <Route path="/post-task" element={<PostTask />} />
+                    <Route path="/create-design-task" element={<CreateDesignTask />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
