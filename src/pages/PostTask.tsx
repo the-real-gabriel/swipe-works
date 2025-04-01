@@ -43,6 +43,8 @@ const PostTask = () => {
         paymentAmount: data.paymentAmount,
         deadline: new Date(data.deadline),
         dimensions: data.dimensions,
+        fileFormat: data.fileFormat || 'PNG', // Add default file format
+        colorScheme: data.colorScheme, // Optional field
         assets: [], // For MVP, we don't handle file uploads yet
       });
 

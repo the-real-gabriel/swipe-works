@@ -31,6 +31,8 @@ const taskFormSchema = z.object({
   paymentAmount: z.coerce.number().min(10, { message: 'Minimum budget is $10' }),
   deadline: z.string().refine(val => !!val, { message: 'Please select a deadline' }),
   dimensions: z.string().min(3, { message: 'Please specify dimensions' }),
+  fileFormat: z.string().min(2, { message: 'Please specify file format' }),
+  colorScheme: z.string().optional(),
 });
 
 type TaskFormValues = z.infer<typeof taskFormSchema>;
@@ -50,6 +52,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, isLoading = false }) => {
       paymentAmount: 50,
       deadline: '',
       dimensions: '',
+      fileFormat: 'PNG',
+      colorScheme: '',
     },
   });
 
@@ -163,6 +167,34 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, isLoading = false }) => {
                 <FormLabel>Dimensions</FormLabel>
                 <FormControl>
                   <Input placeholder="E.g., 1920x1080px" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="fileFormat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>File Format</FormLabel>
+                <FormControl>
+                  <Input placeholder="E.g., PNG, SVG" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="colorScheme"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Color Scheme (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="E.g., Blue and white" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

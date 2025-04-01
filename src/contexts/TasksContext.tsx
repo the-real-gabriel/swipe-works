@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Task, TaskCategory, TaskStatus } from '@/types';
 import { useAuth } from './AuthContext';
@@ -59,6 +60,8 @@ const generateMockTasks = (): Task[] => {
       paymentAmount: 35,
       deadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days from now
       dimensions: '3.5x2 inches, 300dpi',
+      fileFormat: 'PDF, AI',
+      colorScheme: 'Black and gold',
       assets: [],
       createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
     },
@@ -72,6 +75,8 @@ const generateMockTasks = (): Task[] => {
       paymentAmount: 50,
       deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day from now
       dimensions: '8.5x11 inches, 300dpi',
+      fileFormat: 'PDF, JPG',
+      colorScheme: 'Vibrant neon colors',
       assets: [],
       createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
     },
@@ -85,6 +90,8 @@ const generateMockTasks = (): Task[] => {
       paymentAmount: 120,
       deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
       dimensions: '2000x2000px, 300dpi',
+      fileFormat: 'PNG, PSD',
+      colorScheme: 'Pastel, child-friendly',
       assets: [],
       createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 days ago
     },
