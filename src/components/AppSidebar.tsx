@@ -24,7 +24,6 @@ import {
   LogOut, 
   LogIn, 
   UserPlus,
-  PenLine,
   PanelLeftClose
 } from 'lucide-react';
 
@@ -114,17 +113,6 @@ export const AppSidebar = () => {
                 >
                   <PlusCircle className="mr-2" size={18} />
                   <span>Post a Task</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  isActive={isActive('/create-design-task')} 
-                  onClick={() => navigate('/create-design-task')}
-                  tooltip="Create Design Task"
-                >
-                  <PenLine className="mr-2" size={18} />
-                  <span>Create Design Task</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
