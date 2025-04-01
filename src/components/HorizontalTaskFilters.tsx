@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TaskCategory } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -28,14 +29,32 @@ interface HorizontalTaskFiltersProps {
     maxAmount?: number,
     deadline?: Date
   ) => void;
+  initialFilters?: {
+    category?: TaskCategory;
+    minAmount?: number;
+    maxAmount?: number;
+    deadline?: string;
+  };
 }
 
-const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter }) => {
+const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter, initialFilters }) => {
   const { reset } = useForm();
-  const [category, setCategory] = useState<TaskCategory | undefined>(undefined);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [category, setCategory] = useState<TaskCategory | undefined>(initialFilters?.category);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    initialFilters?.minAmount ?? 0, 
+    initialFilters?.maxAmount ?? 200
+  ]);
+  const [date, setDate] = useState<Date | undefined>(
+    initialFilters?.deadline ? new Date(initialFilters.deadline) : undefined
+  );
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Apply initial filters on mount if they exist
+  useEffect(() => {
+    if (initialFilters && Object.keys(initialFilters).length > 0) {
+      setIsExpanded(true);
+    }
+  }, [initialFilters]);
 
   const handleReset = () => {
     setCategory(undefined);
@@ -66,6 +85,8 @@ const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter 
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
             className="flex items-center gap-1"
+            aria-expanded={isExpanded}
+            aria-controls="filter-panel"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span>{isExpanded ? 'Hide Filters' : 'Show Filters'}</span>
@@ -77,6 +98,7 @@ const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter 
               size="sm" 
               onClick={handleReset}
               className="h-8 text-xs"
+              aria-label="Reset filters"
             >
               <FilterX className="h-3.5 w-3.5 mr-1" />
               Reset
@@ -86,7 +108,7 @@ const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter 
       </div>
       
       {isExpanded && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+        <div id="filter-panel" className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
           <div>
             <Label htmlFor="category" className="mb-1 block">Category</Label>
             <Select 
