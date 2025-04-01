@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TaskCategory } from '@/types';
@@ -18,7 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CalendarIcon, FilterX, SliderHorizontal } from 'lucide-react';
+import { CalendarIcon, FilterX, SlidersHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
@@ -68,7 +67,7 @@ const HorizontalTaskFilters: React.FC<HorizontalTaskFiltersProps> = ({ onFilter 
             onClick={() => setIsExpanded(!isExpanded)}
             className="flex items-center gap-1"
           >
-            <SliderHorizontal className="h-4 w-4" />
+            <SlidersHorizontal className="h-4 w-4" />
             <span>{isExpanded ? 'Hide Filters' : 'Show Filters'}</span>
           </Button>
           
