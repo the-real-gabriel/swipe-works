@@ -1,10 +1,18 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { User, Menu } from 'lucide-react';
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -14,51 +22,63 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200 py-3 px-4 shadow-sm">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2">
-          <span className="text-primary font-bold text-xl">DesignSwipe</span>
-        </Link>
+    <nav className="bg-white border-b py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger />
+          <Link to="/" className="font-bold text-xl text-primary">
+            DesignSwipe
+          </Link>
+        </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           {user ? (
             <>
-              {user.role === 'designer' ? (
-                <Link to="/tasks" className="text-gray-600 hover:text-primary">
-                  Tasks
-                </Link>
-              ) : (
-                <Link to="/post-task" className="text-gray-600 hover:text-primary">
-                  Post Task
-                </Link>
-              )}
-              <Link to="/dashboard" className="text-gray-600 hover:text-primary">
-                Dashboard
-              </Link>
-              <Button onClick={handleLogout} variant="ghost" className="text-gray-600">
-                Logout
-              </Button>
-              <Link to="/profile" className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-              </Link>
+              <span className="hidden md:inline-block text-sm text-gray-600">
+                {user.role === 'client' ? 'Client' : 'Designer'}: {user.name}
+              </span>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="rounded-full h-9 w-9 p-0">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  {user.role === 'client' && (
+                    <DropdownMenuItem onClick={() => navigate('/post-task')}>
+                      Post a Task
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           ) : (
-            <>
-              <Link 
-                to="/login" 
-                className="px-4 py-2 text-primary hover:text-primary-dark transition-colors"
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/login')}
               >
-                Login
-              </Link>
-              <Link 
-                to="/register" 
-                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+                Log In
+              </Button>
+              <Button 
+                className="bg-primary hover:bg-primary-dark"
+                size="sm"
+                onClick={() => navigate('/register')}
               >
                 Register
-              </Link>
-            </>
+              </Button>
+            </div>
           )}
         </div>
       </div>

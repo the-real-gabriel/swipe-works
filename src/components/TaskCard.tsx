@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Task } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { Eye } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog';
+import TaskDetail from './TaskDetail';
 
 interface TaskCardProps {
   task: Task;
@@ -14,6 +22,8 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
+  const [detailsOpen, setDetailsOpen] = React.useState(false);
+  
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       'logo': 'bg-blue-500',
@@ -78,43 +88,64 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
   };
 
   return (
-    <Card className="w-full overflow-hidden">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-semibold text-lg leading-tight">{task.title}</h3>
-            <p className="text-sm text-gray-500">
-              Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
-            </p>
+    <>
+      <Card className="w-full overflow-hidden">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-semibold text-lg leading-tight">{task.title}</h3>
+              <p className="text-sm text-gray-500">
+                Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Badge className={getCategoryColor(task.category) + " text-white"}>
+                {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
+              </Badge>
+              <Badge className={getStatusColor(task.status)}>
+                {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+              </Badge>
+            </div>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <Badge className={getCategoryColor(task.category) + " text-white"}>
-              {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
-            </Badge>
-            <Badge className={getStatusColor(task.status)}>
-              {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-            </Badge>
+        </CardHeader>
+        
+        <CardContent className="pb-2">
+          <div className="flex justify-between items-center">
+            <div className="bg-gray-50 px-3 py-1 rounded">
+              <span className="font-medium text-primary">${task.paymentAmount}</span>
+            </div>
+            <div className="text-sm text-gray-500">
+              {task.dimensions}
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="pb-2">
-        <div className="flex justify-between items-center">
-          <div className="bg-gray-50 px-3 py-1 rounded">
-            <span className="font-medium text-primary">${task.paymentAmount}</span>
-          </div>
-          <div className="text-sm text-gray-500">
-            {task.dimensions}
-          </div>
-        </div>
-      </CardContent>
-      
-      {getActionButton() && (
-        <CardFooter className="pt-2">
+        </CardContent>
+        
+        <CardFooter className="pt-2 flex justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setDetailsOpen(true)} 
+            className="flex items-center gap-1"
+          >
+            <Eye size={16} />
+            <span>Details</span>
+          </Button>
           {getActionButton()}
         </CardFooter>
-      )}
-    </Card>
+      </Card>
+
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Task Details</DialogTitle>
+            <DialogDescription>
+              Detailed information about the task
+            </DialogDescription>
+          </DialogHeader>
+          <TaskDetail task={task} />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
