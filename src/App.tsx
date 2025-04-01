@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TasksProvider } from "@/contexts/TasksContext";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -16,7 +16,6 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import PostTask from "./pages/PostTask";
-import CreateDesignTask from "./pages/CreateDesignTask";
 import TaskDetail from "./pages/TaskDetail";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -43,7 +42,7 @@ const App = () => (
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/tasks/:id" element={<TaskDetail />} />
                     <Route path="/post-task" element={<PostTask />} />
-                    <Route path="/create-design-task" element={<CreateDesignTask />} />
+                    <Route path="/create-design-task" element={<Navigate to="/post-task" replace />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

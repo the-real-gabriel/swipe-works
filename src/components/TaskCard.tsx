@@ -4,9 +4,9 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Task } from '@/types';
-import { formatDistanceToNow, format } from 'date-fns';
+import { formatDistanceToNow, format, differenceInHours } from 'date-fns';
 import { Link } from 'react-router-dom';
-import { Eye, Star, Clock, DollarSign } from 'lucide-react';
+import { Eye, Star, Clock, DollarSign, AlertTriangle } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent,
@@ -58,15 +58,44 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
     return description.substring(0, 97) + '...';
   };
 
+  // Check if deadline is within 24 hours
+  const isUrgent = () => {
+    const hoursTillDeadline = differenceInHours(new Date(task.deadline), new Date());
+    return hoursTillDeadline <= 24 && hoursTillDeadline > 0;
+  };
+
+  // Get status badge details
+  const getStatusBadge = () => {
+    switch (task.status) {
+      case 'pending':
+        return { text: 'Available', color: 'bg-green-500' };
+      case 'assigned':
+        return { text: 'In Progress', color: 'bg-blue-500' };
+      case 'completed':
+        return { text: 'Completed', color: 'bg-orange-500' };
+      case 'approved':
+        return { text: 'Approved', color: 'bg-purple-500' };
+      default:
+        return { text: 'Unknown', color: 'bg-gray-500' };
+    }
+  };
+
+  const statusBadge = getStatusBadge();
+
   return (
     <>
       <Card className="w-full overflow-hidden transition-transform hover:scale-105 duration-200 shadow-md">
         <CardContent className="p-4">
           <div className="space-y-3">
-            {/* Task Type at the top in bold, large font */}
-            <h3 className="font-bold text-lg text-primary">
-              {getFormattedCategory(task.category)}
-            </h3>
+            {/* Status Badge */}
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-lg text-primary">
+                {getFormattedCategory(task.category)}
+              </h3>
+              <Badge className={`${statusBadge.color} text-white`} aria-label={`Task status: ${statusBadge.text}`}>
+                {statusBadge.text}
+              </Badge>
+            </div>
             
             {/* Short summary */}
             <p className="text-gray-700 text-sm">{getShortSummary(task.description)}</p>
@@ -78,8 +107,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
                 <span className="font-medium">${task.paymentAmount}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4 text-orange-500" />
-                <span>Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}</span>
+                {isUrgent() && <AlertTriangle className="h-4 w-4 text-red-500" aria-label="Urgent task" />}
+                <Clock className={`h-4 w-4 ${isUrgent() ? 'text-red-500' : 'text-orange-500'}`} />
+                <span className={isUrgent() ? 'text-red-500 font-semibold' : ''}>
+                  Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
+                </span>
               </div>
             </div>
 

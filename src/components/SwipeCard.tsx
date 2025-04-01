@@ -3,8 +3,8 @@ import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Task } from '@/types';
-import { formatDistanceToNow } from 'date-fns';
-import { Star, Clock, DollarSign } from 'lucide-react';
+import { formatDistanceToNow, differenceInHours } from 'date-fns';
+import { Star, Clock, DollarSign, AlertTriangle } from 'lucide-react';
 import { 
   Dialog, 
   DialogContent,
@@ -56,8 +56,32 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
     return description.substring(0, 97) + '...';
   };
 
+  // Check if deadline is within 24 hours
+  const isUrgent = () => {
+    const hoursTillDeadline = differenceInHours(new Date(task.deadline), new Date());
+    return hoursTillDeadline <= 24 && hoursTillDeadline > 0;
+  };
+
+  // Get status badge details
+  const getStatusBadge = () => {
+    switch (task.status) {
+      case 'pending':
+        return { text: 'Available', color: 'bg-green-500' };
+      case 'assigned':
+        return { text: 'In Progress', color: 'bg-blue-500' };
+      case 'completed':
+        return { text: 'Completed', color: 'bg-orange-500' };
+      case 'approved':
+        return { text: 'Approved', color: 'bg-purple-500' };
+      default:
+        return { text: 'Unknown', color: 'bg-gray-500' };
+    }
+  };
+
+  const statusBadge = getStatusBadge();
+
   return (
-    <div ref={constraintsRef} className="swipe-card-container">
+    <div ref={constraintsRef} className="swipe-card-container" aria-label="Task card. Swipe right to accept, left to skip">
       <div 
         className="swipe-card"
         onPointerDown={() => setIsDragging(true)}
@@ -68,10 +92,15 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
         <Card className="w-full h-full shadow-lg overflow-hidden flex flex-col cursor-pointer"
           onClick={() => setDetailsOpen(true)}>
           <CardHeader className="pb-3">
-            {/* Task Type at the top in bold, large font */}
-            <h3 className="font-bold text-xl text-primary">
-              {getFormattedCategory(task.category)}
-            </h3>
+            {/* Status Badge and Task Type at the top */}
+            <div className="flex justify-between items-start">
+              <h3 className="font-bold text-xl text-primary">
+                {getFormattedCategory(task.category)}
+              </h3>
+              <Badge className={`${statusBadge.color} text-white`}>
+                {statusBadge.text}
+              </Badge>
+            </div>
           </CardHeader>
           
           <CardContent className="flex-grow">
@@ -86,8 +115,11 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
                   <span className="font-medium">${task.paymentAmount}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4 text-orange-500" />
-                  <span>Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}</span>
+                  {isUrgent() && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                  <Clock className={`h-4 w-4 ${isUrgent() ? 'text-red-500' : 'text-orange-500'}`} />
+                  <span className={isUrgent() ? 'text-red-500 font-semibold' : ''}>
+                    Due {formatDistanceToNow(new Date(task.deadline), { addSuffix: true })}
+                  </span>
                 </div>
               </div>
 

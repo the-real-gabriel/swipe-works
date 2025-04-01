@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTasks } from '@/contexts/TasksContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -17,8 +17,38 @@ const Tasks = () => {
   const { filteredTasks, acceptTask, filterTasks } = useTasks();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // Retrieve saved filters from localStorage
+  const getSavedFilters = () => {
+    try {
+      const savedFilters = localStorage.getItem('designswipe_filters');
+      if (savedFilters) {
+        return JSON.parse(savedFilters);
+      }
+    } catch (error) {
+      console.error('Error retrieving saved filters:', error);
+    }
+    return {
+      category: undefined,
+      minAmount: undefined,
+      maxAmount: undefined,
+      deadline: undefined
+    };
+  };
+  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewMode, setViewMode] = useState<'swipe' | 'list'>('swipe');
+  const [filters, setFilters] = useState(getSavedFilters());
+  
+  // Apply saved filters on component mount
+  useEffect(() => {
+    filterTasks(
+      filters.category,
+      filters.minAmount,
+      filters.maxAmount,
+      filters.deadline ? new Date(filters.deadline) : undefined
+    );
+  }, []);
   
   // Filter only pending tasks
   const availableTasks = filteredTasks.filter(task => task.status === 'pending');
@@ -59,6 +89,23 @@ const Tasks = () => {
     maxAmount?: number,
     deadline?: Date
   ) => {
+    // Save filters to state
+    const newFilters = { 
+      category,
+      minAmount, 
+      maxAmount,
+      deadline: deadline ? deadline.toISOString() : undefined
+    };
+    setFilters(newFilters);
+    
+    // Save filters to localStorage
+    try {
+      localStorage.setItem('designswipe_filters', JSON.stringify(newFilters));
+    } catch (error) {
+      console.error('Error saving filters:', error);
+    }
+    
+    // Apply filters
     filterTasks(category, minAmount, maxAmount, deadline);
     setCurrentIndex(0);
   };
@@ -83,7 +130,7 @@ const Tasks = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <HorizontalTaskFilters onFilter={handleFilter} />
+      <HorizontalTaskFilters onFilter={handleFilter} initialFilters={filters} />
       
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6">
         <div className="mb-8 flex flex-wrap justify-between items-center">
