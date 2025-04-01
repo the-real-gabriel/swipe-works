@@ -55,9 +55,7 @@ const Tasks = () => {
 
   const handleSwipeLeft = () => {
     // Skip the task
-    setTimeout(() => {
-      setCurrentIndex(prev => (prev + 1) % Math.max(availableTasks.length, 1));
-    }, 300);
+    setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
   };
 
   const handleSwipeRight = async () => {
@@ -70,9 +68,8 @@ const Tasks = () => {
           title: 'Task Accepted!',
           description: 'You can now start working on this task.',
         });
-        setTimeout(() => {
-          setCurrentIndex(prev => (prev + 1) % Math.max(availableTasks.length, 1));
-        }, 300);
+        // Move to next card if available
+        setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
       } catch (error) {
         toast({
           title: 'Error',
@@ -127,7 +124,7 @@ const Tasks = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
       
       <HorizontalTaskFilters onFilter={handleFilter} initialFilters={filters} />
@@ -135,13 +132,15 @@ const Tasks = () => {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6">
         <div className="mb-8 flex flex-wrap justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Available Tasks</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Available Tasks</h1>
             {user?.role === 'designer' ? (
-              <p className="text-gray-600">
-                {viewMode === 'swipe' ? 'Swipe right to accept, left to skip' : 'Browse available tasks'}
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                {viewMode === 'swipe' 
+                  ? 'Swipe right to accept, left to skip' 
+                  : 'Browse available tasks'}
               </p>
             ) : (
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
                 Browse available tasks or <Button 
                   onClick={() => navigate('/post-task')} 
                   variant="link" 
@@ -159,18 +158,18 @@ const Tasks = () => {
                 variant={viewMode === 'swipe' ? 'default' : 'outline'} 
                 size="sm" 
                 onClick={() => setViewMode('swipe')}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 h-8 text-xs"
               >
-                <List size={16} />
+                <List size={14} />
                 <span>Swipe</span>
               </Button>
               <Button 
                 variant={viewMode === 'list' ? 'default' : 'outline'} 
                 size="sm" 
                 onClick={() => setViewMode('list')}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 h-8 text-xs"
               >
-                <Grid size={16} />
+                <Grid size={14} />
                 <span>List</span>
               </Button>
             </div>
@@ -178,12 +177,12 @@ const Tasks = () => {
         </div>
 
         {!user && (
-          <div className="my-4 bg-blue-50 border border-blue-200 p-4 rounded-lg">
+          <div className="my-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-lg">
             <div className="flex items-start">
-              <Info className="text-blue-500 mr-2 mt-0.5" size={18} />
+              <Info className="text-blue-500 mr-2 mt-0.5 flex-shrink-0" size={18} />
               <div>
-                <h4 className="text-sm font-medium text-blue-800">Sign Up to Accept Tasks</h4>
-                <p className="text-xs text-blue-600 mt-1">
+                <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Sign Up to Accept Tasks</h4>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                   Register as a designer to accept tasks or as a client to post tasks.
                 </p>
                 <div className="mt-2 flex gap-2">
@@ -191,14 +190,14 @@ const Tasks = () => {
                     variant="outline" 
                     size="sm" 
                     onClick={() => navigate('/login')} 
-                    className="text-xs"
+                    className="text-xs h-8"
                   >
                     Log In
                   </Button>
                   <Button 
                     size="sm" 
                     onClick={() => navigate('/register')} 
-                    className="text-xs bg-primary hover:bg-primary-dark"
+                    className="text-xs h-8 bg-primary hover:bg-primary-dark"
                   >
                     Register
                   </Button>
@@ -211,20 +210,44 @@ const Tasks = () => {
         {availableTasks.length > 0 ? (
           <>
             {viewMode === 'swipe' && user?.role === 'designer' ? (
-              <div className="flex flex-col items-center">
-                <SwipeCard
-                  task={availableTasks[currentIndex]}
-                  onSwipeLeft={handleSwipeLeft}
-                  onSwipeRight={handleSwipeRight}
-                />
+              <div className="flex flex-col items-center py-6">
+                <div className="w-full max-w-md relative mb-12">
+                  {availableTasks.slice(currentIndex, currentIndex + 5).map((task, idx) => (
+                    <SwipeCard
+                      key={task.id}
+                      task={task}
+                      onSwipeLeft={handleSwipeLeft}
+                      onSwipeRight={handleSwipeRight}
+                      index={idx}
+                      totalCards={Math.min(5, availableTasks.length - currentIndex)}
+                    />
+                  ))}
+                </div>
                 
-                <div className="mt-6 text-gray-500 text-center">
-                  <p>Task {currentIndex + 1} of {availableTasks.length}</p>
-                  <p className="mt-2">Swipe right to accept, left to skip</p>
+                <div className="mt-6 text-gray-500 dark:text-gray-400 text-center">
+                  <p className="text-sm">Task {currentIndex + 1} of {availableTasks.length}</p>
+                  <div className="flex items-center justify-center gap-8 mt-4">
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2 border-red-200 dark:border-red-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      onClick={handleSwipeLeft}
+                      disabled={currentIndex >= availableTasks.length - 1}
+                    >
+                      <X size={16} />
+                      Skip
+                    </Button>
+                    <Button
+                      className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white"
+                      onClick={handleSwipeRight}
+                    >
+                      <Check size={16} />
+                      Accept
+                    </Button>
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {availableTasks.map(task => (
                   <TaskCard 
                     key={task.id} 
@@ -237,11 +260,11 @@ const Tasks = () => {
             )}
           </>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center border border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-8 text-center border border-gray-200 dark:border-gray-800">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
               No available tasks
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
               There are no tasks that match your filters. Try adjusting your filter settings or check back later.
             </p>
           </div>
