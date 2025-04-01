@@ -33,8 +33,8 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, onAccept }) => 
   // Specific requirements
   const requirements = {
     dimensions: task.dimensions,
-    colorScheme: "Blue and white", // Mock data
-    fileFormat: "PNG and SVG" // Mock data
+    colorScheme: task.colorScheme || "No preference", 
+    fileFormat: task.fileFormat
   };
 
   // Mock assets

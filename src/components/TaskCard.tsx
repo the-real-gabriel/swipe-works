@@ -52,6 +52,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
     return formatted[category as keyof typeof formatted] || 'Design Task';
   };
 
+  // Create a short summary from the description (max 100 chars)
+  const getShortSummary = (description: string): string => {
+    if (description.length <= 100) return description;
+    return description.substring(0, 97) + '...';
+  };
+
   return (
     <>
       <Card className="w-full overflow-hidden transition-transform hover:scale-105 duration-200 shadow-md">
@@ -61,6 +67,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
             <h3 className="font-bold text-lg text-primary">
               {getFormattedCategory(task.category)}
             </h3>
+            
+            {/* Short summary */}
+            <p className="text-gray-700 text-sm">{getShortSummary(task.description)}</p>
             
             {/* Payout and Deadline side by side */}
             <div className="flex justify-between items-center text-sm text-gray-600">

@@ -50,6 +50,12 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
     return formatted[category as keyof typeof formatted] || 'Design Task';
   };
 
+  // Create a short summary from the description (max 100 chars)
+  const getShortSummary = (description: string): string => {
+    if (description.length <= 100) return description;
+    return description.substring(0, 97) + '...';
+  };
+
   return (
     <div ref={constraintsRef} className="swipe-card-container">
       <div 
@@ -70,6 +76,9 @@ const SwipeCard: React.FC<SwipeCardProps> = ({ task, onSwipeLeft, onSwipeRight }
           
           <CardContent className="flex-grow">
             <div className="space-y-4">
+              {/* Short summary */}
+              <p className="text-gray-700">{getShortSummary(task.description)}</p>
+              
               {/* Payout and Deadline side by side */}
               <div className="flex justify-between items-center text-sm">
                 <div className="flex items-center gap-1">
