@@ -128,7 +128,8 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
       zIndex: 40 - index,
       opacity: index < 4 ? 1 - (index * 0.15) : 0,
       transform: `scale(${1 - (index * 0.03)})`,
-      pointerEvents: 'none',
+      // Fix: Use a valid framer-motion pointerEvents value instead of a string
+      pointerEvents: 'none' as const,
     };
   };
 
