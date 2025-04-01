@@ -43,9 +43,12 @@ export const AppSidebar = () => {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center p-2">
-          <div className="text-xl font-semibold text-primary">DesignSwipe</div>
-          <SidebarTrigger className="ml-auto md:hidden" />
+        <div className="flex items-center p-2 justify-between">
+          <div className="text-xl font-semibold text-primary flex items-center gap-1.5">
+            <span className="font-bold">Design</span>
+            <span>Swipe</span>
+          </div>
+          <SidebarTrigger className="ml-auto" />
         </div>
       </SidebarHeader>
       

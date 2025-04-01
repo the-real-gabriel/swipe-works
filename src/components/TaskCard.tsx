@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TaskDetailModal from './TaskDetailModal';
 
 interface TaskCardProps {
@@ -38,19 +39,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
     return formatted[category as keyof typeof formatted] || 'Design Task';
   };
 
-  // Create a short summary from the description (max 100 chars)
   const getShortSummary = (description: string): string => {
     if (description.length <= 100) return description;
     return description.substring(0, 97) + '...';
   };
 
-  // Check if deadline is within 24 hours
   const isUrgent = () => {
     const hoursTillDeadline = differenceInHours(new Date(task.deadline), new Date());
     return hoursTillDeadline <= 24 && hoursTillDeadline > 0;
   };
 
-  // Get status badge details
   const getStatusBadge = () => {
     switch (task.status) {
       case 'pending':
@@ -67,6 +65,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
   };
 
   const statusBadge = getStatusBadge();
+
+  // Get client initials for avatar fallback
+  const getClientInitials = (name: string = 'Client') => {
+    return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+  };
 
   return (
     <>
@@ -101,10 +104,24 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, action, onActionClick }) => {
               </div>
             </div>
 
-            {/* Client Reputation */}
-            <div className="flex justify-end items-center text-sm gap-1">
-              <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
-              <span className="font-medium text-gray-700 dark:text-gray-300">4.8</span>
+            {/* Client info and reputation */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src={task.clientAvatar || "/placeholder.svg"} alt="Client" />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {getClientInitials(task.clientName)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  {task.clientName || "Client"}
+                </span>
+              </div>
+
+              <div className="flex items-center text-sm gap-1">
+                <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
+                <span className="font-medium text-gray-700 dark:text-gray-300">4.8</span>
+              </div>
             </div>
           </div>
         </CardContent>

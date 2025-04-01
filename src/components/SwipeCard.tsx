@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TaskDetailModal from './TaskDetailModal';
 import { motion } from 'framer-motion';
 
@@ -101,20 +103,26 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     if (index === 0) return {};
     
     const offset = 4 * Math.min(index, 3);
-    const style: any = {
+    return {
       position: 'absolute',
       top: `${offset}px`,
       zIndex: 10 - index,
-      opacity: index < 4 ? 1 - (index * 0.2) : 0,
-      transform: `scale(${1 - (index * 0.05)})`,
+      opacity: index < 4 ? 1 - (index * 0.15) : 0,
+      transform: `scale(${1 - (index * 0.03)})`,
+      boxShadow: index === 0 ? '0 10px 20px rgba(0,0,0,0.15)' : 'none',
+      transition: 'all 0.2s ease'
     };
-    return style;
+  };
+
+  // Get client initials for avatar fallback
+  const getClientInitials = (name: string = 'Client') => {
+    return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
   };
 
   return (
     <div 
       className="w-full max-w-md mx-auto relative" 
-      style={{ height: '520px' }}
+      style={{ height: '550px' }}
       aria-label="Task card. Swipe right to accept, left to skip"
     >
       <motion.div 
@@ -176,9 +184,23 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end items-center text-sm gap-1">
-                <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
-                <span className="font-medium text-gray-700 dark:text-gray-300">4.8</span>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage src={task.clientAvatar || "/placeholder.svg"} alt="Client" />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      {getClientInitials(task.clientName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {task.clientName || "Client"}
+                  </span>
+                </div>
+
+                <div className="flex items-center text-sm gap-1">
+                  <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">4.8</span>
+                </div>
               </div>
             </div>
           </CardContent>
