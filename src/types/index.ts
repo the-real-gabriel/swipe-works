@@ -32,6 +32,8 @@ export interface Task {
   description: string;
   category: TaskCategory;
   clientId: string;
+  clientName?: string;
+  clientAvatar?: string;
   designerId?: string;
   status: TaskStatus;
   paymentAmount: number;

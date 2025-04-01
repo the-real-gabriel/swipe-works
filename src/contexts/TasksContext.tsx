@@ -26,6 +26,8 @@ const generateMockTasks = (): Task[] => {
       description: 'Need a clean, modern logo for my tech startup. Looking for minimalist design with bold typography.',
       category: 'logo',
       clientId: 'client1',
+      clientName: 'Alex Johnson',
+      clientAvatar: '/placeholder.svg',
       status: 'pending',
       paymentAmount: 85,
       deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
@@ -41,6 +43,8 @@ const generateMockTasks = (): Task[] => {
       description: 'Looking for an eye-catching banner for my Instagram and Facebook pages. Should include my brand colors (blue and orange).',
       category: 'banner',
       clientId: 'client2',
+      clientName: 'Sarah Miller',
+      clientAvatar: '/placeholder.svg',
       status: 'pending',
       paymentAmount: 45,
       deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
@@ -56,6 +60,8 @@ const generateMockTasks = (): Task[] => {
       description: 'Need a professional business card design for my consulting business. Should be elegant and modern.',
       category: 'business-card',
       clientId: 'client3',
+      clientName: 'David Chen',
+      clientAvatar: '/placeholder.svg',
       status: 'pending',
       paymentAmount: 35,
       deadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days from now
@@ -71,6 +77,8 @@ const generateMockTasks = (): Task[] => {
       description: 'Need a vibrant flyer for my upcoming music event. Should have an energetic and youthful vibe.',
       category: 'flyer',
       clientId: 'client2',
+      clientName: 'Sarah Miller',
+      clientAvatar: '/placeholder.svg',
       status: 'pending',
       paymentAmount: 50,
       deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day from now
@@ -86,6 +94,8 @@ const generateMockTasks = (): Task[] => {
       description: 'Looking for a custom character illustration in a cartoon style for my children\'s book.',
       category: 'illustration',
       clientId: 'client3',
+      clientName: 'David Chen',
+      clientAvatar: '/placeholder.svg',
       status: 'pending',
       paymentAmount: 120,
       deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now

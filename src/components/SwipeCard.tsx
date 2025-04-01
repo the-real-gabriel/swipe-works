@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TaskDetailModal from './TaskDetailModal';
-import { motion } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 
 interface SwipeCardProps {
   task: Task;
@@ -100,16 +100,21 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   const statusBadge = getStatusBadge();
   
   const getCardStyle = () => {
-    if (index === 0) return {};
+    // Only apply stacking effect for non-active cards
+    if (index === 0) {
+      return {
+        boxShadow: '0 10px 20px rgba(0,0,0,0.15)'
+      };
+    }
     
     const offset = 4 * Math.min(index, 3);
     return {
-      position: 'absolute',
+      position: 'absolute' as const,
       top: `${offset}px`,
       zIndex: 10 - index,
       opacity: index < 4 ? 1 - (index * 0.15) : 0,
       transform: `scale(${1 - (index * 0.03)})`,
-      boxShadow: index === 0 ? '0 10px 20px rgba(0,0,0,0.15)' : 'none',
+      boxShadow: 'none',
       transition: 'all 0.2s ease'
     };
   };
@@ -128,7 +133,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
       <motion.div 
         ref={cardRef}
         style={getCardStyle()}
-        drag="x"
+        drag={index === 0 ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.8}
         onDragEnd={handleDragEnd}
