@@ -103,7 +103,6 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({ onFilter }) => {
           </div>
           
           <Slider
-            variant="range"
             value={[priceRange[0], priceRange[1]]}
             min={0}
             max={200}
