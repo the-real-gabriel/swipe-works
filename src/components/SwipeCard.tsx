@@ -99,23 +99,36 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const statusBadge = getStatusBadge();
   
+  // Enhanced card styling for more realistic deck appearance
   const getCardStyle = () => {
-    // Only apply stacking effect for non-active cards
+    // Base styles for all cards
+    const baseStyle = {
+      boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+      transition: 'all 0.2s ease',
+    };
+    
+    // Current/active card styling (at front of stack)
     if (index === 0) {
       return {
-        boxShadow: '0 10px 20px rgba(0,0,0,0.15)'
+        ...baseStyle,
+        zIndex: 50,
+        boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
+        position: 'relative' as const,
       };
     }
     
+    // Stacked cards behind the active card
     const offset = 4 * Math.min(index, 3);
     return {
+      ...baseStyle,
       position: 'absolute' as const,
       top: `${offset}px`,
-      zIndex: 10 - index,
+      left: `${offset}px`,
+      right: `${-offset}px`,
+      zIndex: 40 - index,
       opacity: index < 4 ? 1 - (index * 0.15) : 0,
       transform: `scale(${1 - (index * 0.03)})`,
-      boxShadow: 'none',
-      transition: 'all 0.2s ease'
+      pointerEvents: 'none',
     };
   };
 
@@ -137,7 +150,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.8}
         onDragEnd={handleDragEnd}
-        whileDrag={{ scale: 1.02 }}
+        whileDrag={{ scale: 1.02, rotate: 0 }}
         animate={
           swipeDirection === 'left' 
             ? { x: -1000, rotate: -10, transition: { duration: 0.2 } }
@@ -145,20 +158,22 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
               ? { x: 1000, rotate: 10, transition: { duration: 0.2 } }
               : { x: 0, rotate: 0 }
         }
-        className="absolute inset-0 flex items-center justify-center pointer-events-none cursor-grab active:cursor-grabbing"
+        className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing"
       >
         <Card 
-          className="w-full h-full bg-white dark:bg-gray-900 shadow-lg overflow-hidden flex flex-col border-gray-200 dark:border-gray-800"
+          className="w-full h-full bg-white dark:bg-gray-900 shadow-lg overflow-hidden flex flex-col border-gray-200 dark:border-gray-800 rounded-lg"
           onClick={() => setDetailsOpen(true)}
         >
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <div className="absolute left-4 p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
-              <X className="h-8 w-8 text-red-500" />
+          {index === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+              <div className="absolute left-4 p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+                <X className="h-8 w-8 text-red-500" />
+              </div>
+              <div className="absolute right-4 p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                <Check className="h-8 w-8 text-green-500" />
+              </div>
             </div>
-            <div className="absolute right-4 p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
-              <Check className="h-8 w-8 text-green-500" />
-            </div>
-          </div>
+          )}
 
           <CardHeader className="pb-2 pt-5">
             <div className="flex justify-between items-start">

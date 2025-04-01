@@ -51,7 +51,9 @@ const Tasks = () => {
   const availableTasks = filteredTasks.filter(task => task.status === 'pending');
 
   const handleSwipeLeft = () => {
-    setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
+    if (currentIndex < availableTasks.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    }
   };
 
   const handleSwipeRight = async () => {
@@ -63,7 +65,11 @@ const Tasks = () => {
           title: 'Task Accepted!',
           description: 'You can now start working on this task.',
         });
-        setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
+        
+        // Move to next card if available
+        if (currentIndex < availableTasks.length - 1) {
+          setCurrentIndex(prev => prev + 1);
+        }
       } catch (error) {
         toast({
           title: 'Error',
@@ -202,7 +208,7 @@ const Tasks = () => {
           <>
             {viewMode === 'swipe' && user?.role === 'designer' ? (
               <div className="flex flex-col items-center py-6">
-                <div className="w-full max-w-md relative mb-12">
+                <div className="w-full max-w-md relative mb-12" style={{ height: '550px' }}>
                   {availableTasks.slice(currentIndex, currentIndex + 5).map((task, idx) => (
                     <SwipeCard
                       key={task.id}

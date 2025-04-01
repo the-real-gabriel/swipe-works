@@ -1,88 +1,109 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Bell, Menu } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   DropdownMenu, 
+  DropdownMenuTrigger, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
-import { User, Menu } from 'lucide-react';
+import { SidebarTrigger } from './ui/sidebar';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
+  
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-
+  
   return (
-    <nav className="bg-white border-b py-4">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <div className="md:hidden mr-2">
           <SidebarTrigger />
-          <Link to="/" className="font-bold text-xl text-primary">
-            DesignSwipe
-          </Link>
         </div>
-
-        <div className="flex items-center gap-4">
+        
+        <div className="flex-1" />
+        
+        <div className="flex items-center gap-2">
           {user ? (
             <>
-              <span className="hidden md:inline-block text-sm text-gray-600">
-                {user.role === 'client' ? 'Client' : 'Designer'}: {user.name}
-              </span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                aria-label="Notifications"
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1 right-1 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+              </Button>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="rounded-full h-9 w-9 p-0">
-                    <User className="h-5 w-5" />
+                  <Button 
+                    variant="ghost" 
+                    className="relative h-8 w-8 rounded-full"
+                    aria-label="User menu"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/placeholder.svg" alt={user.name} />
+                      <AvatarFallback>
+                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    Profile
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                    Dashboard
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
-                  {user.role === 'client' && (
-                    <DropdownMenuItem onClick={() => navigate('/post-task')}>
-                      Post a Task
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
-                    Logout
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 size="sm" 
                 onClick={() => navigate('/login')}
               >
-                Log In
+                Log in
               </Button>
               <Button 
-                className="bg-primary hover:bg-primary-dark"
-                size="sm"
+                size="sm" 
                 onClick={() => navigate('/register')}
               >
-                Register
+                Sign up
               </Button>
             </div>
           )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 
