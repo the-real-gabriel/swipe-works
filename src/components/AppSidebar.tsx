@@ -24,7 +24,8 @@ import {
   LogOut, 
   LogIn, 
   UserPlus,
-  PenLine
+  PenLine,
+  PanelLeftClose
 } from 'lucide-react';
 
 export const AppSidebar = () => {
@@ -75,33 +76,15 @@ export const AppSidebar = () => {
                   <span>Browse Tasks</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              
-              {user && user.role === 'client' && (
-                <>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      isActive={isActive('/post-task')} 
-                      onClick={() => navigate('/post-task')}
-                      tooltip="Post a New Task"
-                    >
-                      <PlusCircle className="mr-2" size={18} />
-                      <span>Post a Task</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      isActive={isActive('/create-design-task')} 
-                      onClick={() => navigate('/create-design-task')}
-                      tooltip="Create Design Task"
-                    >
-                      <PenLine className="mr-2" size={18} />
-                      <span>Create Design Task</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </>
-              )}
-              
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        {/* Designer Options - Visible to all users during prototyping */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Designer Actions</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {user && (
                 <SidebarMenuItem>
                   <SidebarMenuButton 
@@ -114,7 +97,44 @@ export const AppSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        {/* Client Options - Now visible to all users during prototyping */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Client Actions</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={isActive('/post-task')} 
+                  onClick={() => navigate('/post-task')}
+                  tooltip="Post a New Task"
+                >
+                  <PlusCircle className="mr-2" size={18} />
+                  <span>Post a Task</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={isActive('/create-design-task')} 
+                  onClick={() => navigate('/create-design-task')}
+                  tooltip="Create Design Task"
+                >
+                  <PenLine className="mr-2" size={18} />
+                  <span>Create Design Task</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {user && (
                 <SidebarMenuItem>
                   <SidebarMenuButton 
@@ -127,40 +147,35 @@ export const AppSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
+              
+              {!user && (
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      isActive={isActive('/login')} 
+                      onClick={() => navigate('/login')}
+                      tooltip="Log In"
+                    >
+                      <LogIn className="mr-2" size={18} />
+                      <span>Log In</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      isActive={isActive('/register')} 
+                      onClick={() => navigate('/register')}
+                      tooltip="Register"
+                    >
+                      <UserPlus className="mr-2" size={18} />
+                      <span>Register</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
-        {!user && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Account</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    isActive={isActive('/login')} 
-                    onClick={() => navigate('/login')}
-                    tooltip="Log In"
-                  >
-                    <LogIn className="mr-2" size={18} />
-                    <span>Log In</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    isActive={isActive('/register')} 
-                    onClick={() => navigate('/register')}
-                    tooltip="Register"
-                  >
-                    <UserPlus className="mr-2" size={18} />
-                    <span>Register</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
       </SidebarContent>
       
       {user && (
