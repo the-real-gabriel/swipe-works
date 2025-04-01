@@ -37,6 +37,8 @@ export interface Task {
   paymentAmount: number;
   deadline: Date;
   dimensions: string;
+  fileFormat: string;
+  colorScheme?: string;
   assets: string[];
   createdAt: Date;
 }
