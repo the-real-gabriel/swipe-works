@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -71,19 +70,16 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     return formatted[category as keyof typeof formatted] || 'Design Task';
   };
 
-  // Create a short summary from the description (max 100 chars)
   const getShortSummary = (description: string): string => {
     if (description.length <= 100) return description;
     return description.substring(0, 97) + '...';
   };
 
-  // Check if deadline is within 24 hours
   const isUrgent = () => {
     const hoursTillDeadline = differenceInHours(new Date(task.deadline), new Date());
     return hoursTillDeadline <= 24 && hoursTillDeadline > 0;
   };
 
-  // Get status badge details
   const getStatusBadge = () => {
     switch (task.status) {
       case 'pending':
@@ -101,7 +97,6 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
   const statusBadge = getStatusBadge();
   
-  // Calculate card position in stack
   const getCardStyle = () => {
     if (index === 0) return {};
     
@@ -123,7 +118,6 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
       aria-label="Task card. Swipe right to accept, left to skip"
     >
       <motion.div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
         ref={cardRef}
         style={getCardStyle()}
         drag="x"
@@ -138,7 +132,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
               ? { x: 1000, rotate: 10, transition: { duration: 0.2 } }
               : { x: 0, rotate: 0 }
         }
-        className="cursor-grab active:cursor-grabbing"
+        className="absolute inset-0 flex items-center justify-center pointer-events-none cursor-grab active:cursor-grabbing"
       >
         <Card 
           className="w-full h-full bg-white dark:bg-gray-900 shadow-lg overflow-hidden flex flex-col border-gray-200 dark:border-gray-800"
