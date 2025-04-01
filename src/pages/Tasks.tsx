@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTasks } from '@/contexts/TasksContext';
@@ -9,7 +8,7 @@ import TaskCard from '@/components/TaskCard';
 import HorizontalTaskFilters from '@/components/HorizontalTaskFilters';
 import { TaskCategory, Task } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Info, Grid, List } from 'lucide-react';
+import { Info, Grid, List, X, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Tasks = () => {
@@ -18,7 +17,6 @@ const Tasks = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // Retrieve saved filters from localStorage
   const getSavedFilters = () => {
     try {
       const savedFilters = localStorage.getItem('designswipe_filters');
@@ -40,7 +38,6 @@ const Tasks = () => {
   const [viewMode, setViewMode] = useState<'swipe' | 'list'>('swipe');
   const [filters, setFilters] = useState(getSavedFilters());
   
-  // Apply saved filters on component mount
   useEffect(() => {
     filterTasks(
       filters.category,
@@ -50,16 +47,13 @@ const Tasks = () => {
     );
   }, []);
   
-  // Filter only pending tasks
   const availableTasks = filteredTasks.filter(task => task.status === 'pending');
 
   const handleSwipeLeft = () => {
-    // Skip the task
     setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
   };
 
   const handleSwipeRight = async () => {
-    // Accept the task
     if (availableTasks.length > 0) {
       const taskId = availableTasks[currentIndex].id;
       try {
@@ -68,7 +62,6 @@ const Tasks = () => {
           title: 'Task Accepted!',
           description: 'You can now start working on this task.',
         });
-        // Move to next card if available
         setCurrentIndex(prev => Math.min(prev + 1, availableTasks.length - 1));
       } catch (error) {
         toast({
@@ -86,7 +79,6 @@ const Tasks = () => {
     maxAmount?: number,
     deadline?: Date
   ) => {
-    // Save filters to state
     const newFilters = { 
       category,
       minAmount, 
@@ -95,14 +87,12 @@ const Tasks = () => {
     };
     setFilters(newFilters);
     
-    // Save filters to localStorage
     try {
       localStorage.setItem('designswipe_filters', JSON.stringify(newFilters));
     } catch (error) {
       console.error('Error saving filters:', error);
     }
     
-    // Apply filters
     filterTasks(category, minAmount, maxAmount, deadline);
     setCurrentIndex(0);
   };

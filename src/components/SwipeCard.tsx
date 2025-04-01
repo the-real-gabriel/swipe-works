@@ -106,13 +106,14 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     if (index === 0) return {};
     
     const offset = 4 * Math.min(index, 3);
-    return {
+    const style: any = {
       position: 'absolute',
       top: `${offset}px`,
       zIndex: 10 - index,
       opacity: index < 4 ? 1 - (index * 0.2) : 0,
       transform: `scale(${1 - (index * 0.05)})`,
     };
+    return style;
   };
 
   return (
