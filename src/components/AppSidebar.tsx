@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { 
   Home, 
@@ -31,6 +32,7 @@ export const AppSidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { state } = useSidebar();
 
   const handleLogout = () => {
     logout();
@@ -44,11 +46,11 @@ export const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center p-2 justify-between">
-          <div className="text-xl font-semibold text-primary flex items-center gap-1.5">
+          <div className={`text-xl font-semibold text-primary flex items-center gap-1.5 ${state === "collapsed" ? "hidden" : ""}`}>
             <span className="font-bold">Design</span>
             <span>Swipe</span>
           </div>
-          <SidebarTrigger className="ml-auto" />
+          <SidebarTrigger className={state === "collapsed" ? "mx-auto" : "ml-auto"} />
         </div>
       </SidebarHeader>
       
