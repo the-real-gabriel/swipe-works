@@ -61,7 +61,7 @@ export const AppSidebar = () => {
                 isActive={isActive('/')} 
                 onClick={() => navigate('/')}
                 tooltip="Home"
-                className="justify-center"
+                className={state === "collapsed" ? "justify-center" : "justify-start"}
               >
                 <Home className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                 <span className={state === "collapsed" ? "hidden" : "block"}>Home</span>
@@ -73,7 +73,7 @@ export const AppSidebar = () => {
                 isActive={isActive('/tasks')} 
                 onClick={() => navigate('/tasks')}
                 tooltip="Available Tasks"
-                className="justify-center"
+                className={state === "collapsed" ? "justify-center" : "justify-start"}
               >
                 <ClipboardList className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                 <span className={state === "collapsed" ? "hidden" : "block"}>Browse Tasks</span>
@@ -85,7 +85,7 @@ export const AppSidebar = () => {
                 isActive={isActive('/post-task')} 
                 onClick={() => navigate('/post-task')}
                 tooltip="Post a New Task"
-                className="justify-center"
+                className={state === "collapsed" ? "justify-center" : "justify-start"}
               >
                 <PlusCircle className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                 <span className={state === "collapsed" ? "hidden" : "block"}>Post a Task</span>
@@ -98,7 +98,7 @@ export const AppSidebar = () => {
                   isActive={isActive('/dashboard')} 
                   onClick={() => navigate('/dashboard')}
                   tooltip="Dashboard"
-                  className="justify-center"
+                  className={state === "collapsed" ? "justify-center" : "justify-start"}
                 >
                   <ClipboardList className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                   <span className={state === "collapsed" ? "hidden" : "block"}>My Dashboard</span>
@@ -117,7 +117,7 @@ export const AppSidebar = () => {
                   isActive={isActive('/profile')} 
                   onClick={() => navigate('/profile')}
                   tooltip="Profile"
-                  className="justify-center"
+                  className={state === "collapsed" ? "justify-center" : "justify-start"}
                 >
                   <User className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                   <span className={state === "collapsed" ? "hidden" : "block"}>Profile</span>
@@ -132,7 +132,7 @@ export const AppSidebar = () => {
                     isActive={isActive('/login')} 
                     onClick={() => navigate('/login')}
                     tooltip="Log In"
-                    className="justify-center"
+                    className={state === "collapsed" ? "justify-center" : "justify-start"}
                   >
                     <LogIn className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                     <span className={state === "collapsed" ? "hidden" : "block"}>Log In</span>
@@ -144,7 +144,7 @@ export const AppSidebar = () => {
                     isActive={isActive('/register')} 
                     onClick={() => navigate('/register')}
                     tooltip="Register"
-                    className="justify-center"
+                    className={state === "collapsed" ? "justify-center" : "justify-start"}
                   >
                     <UserPlus className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                     <span className={state === "collapsed" ? "hidden" : "block"}>Register</span>
@@ -158,7 +158,7 @@ export const AppSidebar = () => {
                 <SidebarMenuButton 
                   onClick={handleLogout}
                   tooltip="Logout"
-                  className="justify-center"
+                  className={state === "collapsed" ? "justify-center" : "justify-start"}
                 >
                   <LogOut className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
                   <span className={state === "collapsed" ? "hidden" : "block"}>Logout</span>
@@ -173,3 +173,4 @@ export const AppSidebar = () => {
 };
 
 export default AppSidebar;
+
