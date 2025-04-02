@@ -48,7 +48,10 @@ export const AppSidebar = () => {
             <span className="font-bold">Design</span>
             <span>Swipe</span>
           </div>
-          <SidebarTrigger className={state === "collapsed" ? "mx-auto" : "ml-auto"} />
+          {/* Fixed the alignment of the toggle button to match the menu icons */}
+          <SidebarTrigger 
+            className={`${state === "collapsed" ? "mx-auto" : "ml-auto"} h-8 w-8 flex items-center justify-center`} 
+          />
         </div>
       </SidebarHeader>
       
@@ -173,4 +176,3 @@ export const AppSidebar = () => {
 };
 
 export default AppSidebar;
-
