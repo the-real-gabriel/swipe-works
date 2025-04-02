@@ -54,16 +54,17 @@ export const AppSidebar = () => {
       
       <SidebarContent className="flex flex-col justify-between h-full">
         {/* Main Navigation - All at the top */}
-        <div className="space-y-1">
+        <div className="space-y-4">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton 
                 isActive={isActive('/')} 
                 onClick={() => navigate('/')}
                 tooltip="Home"
+                className="justify-center"
               >
-                <Home className="mr-2" size={18} />
-                <span>Home</span>
+                <Home className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                <span className={state === "collapsed" ? "hidden" : "block"}>Home</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             
@@ -72,9 +73,10 @@ export const AppSidebar = () => {
                 isActive={isActive('/tasks')} 
                 onClick={() => navigate('/tasks')}
                 tooltip="Available Tasks"
+                className="justify-center"
               >
-                <ClipboardList className="mr-2" size={18} />
-                <span>Browse Tasks</span>
+                <ClipboardList className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                <span className={state === "collapsed" ? "hidden" : "block"}>Browse Tasks</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
@@ -83,9 +85,10 @@ export const AppSidebar = () => {
                 isActive={isActive('/post-task')} 
                 onClick={() => navigate('/post-task')}
                 tooltip="Post a New Task"
+                className="justify-center"
               >
-                <PlusCircle className="mr-2" size={18} />
-                <span>Post a Task</span>
+                <PlusCircle className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                <span className={state === "collapsed" ? "hidden" : "block"}>Post a Task</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
@@ -95,9 +98,10 @@ export const AppSidebar = () => {
                   isActive={isActive('/dashboard')} 
                   onClick={() => navigate('/dashboard')}
                   tooltip="Dashboard"
+                  className="justify-center"
                 >
-                  <ClipboardList className="mr-2" size={18} />
-                  <span>My Dashboard</span>
+                  <ClipboardList className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                  <span className={state === "collapsed" ? "hidden" : "block"}>My Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )}
@@ -105,7 +109,7 @@ export const AppSidebar = () => {
         </div>
         
         {/* Account Options - At the bottom */}
-        <div className="mt-auto">
+        <div className="mt-auto space-y-4">
           <SidebarMenu>
             {user && (
               <SidebarMenuItem>
@@ -113,9 +117,10 @@ export const AppSidebar = () => {
                   isActive={isActive('/profile')} 
                   onClick={() => navigate('/profile')}
                   tooltip="Profile"
+                  className="justify-center"
                 >
-                  <User className="mr-2" size={18} />
-                  <span>Profile</span>
+                  <User className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                  <span className={state === "collapsed" ? "hidden" : "block"}>Profile</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )}
@@ -127,9 +132,10 @@ export const AppSidebar = () => {
                     isActive={isActive('/login')} 
                     onClick={() => navigate('/login')}
                     tooltip="Log In"
+                    className="justify-center"
                   >
-                    <LogIn className="mr-2" size={18} />
-                    <span>Log In</span>
+                    <LogIn className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                    <span className={state === "collapsed" ? "hidden" : "block"}>Log In</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 
@@ -138,9 +144,10 @@ export const AppSidebar = () => {
                     isActive={isActive('/register')} 
                     onClick={() => navigate('/register')}
                     tooltip="Register"
+                    className="justify-center"
                   >
-                    <UserPlus className="mr-2" size={18} />
-                    <span>Register</span>
+                    <UserPlus className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                    <span className={state === "collapsed" ? "hidden" : "block"}>Register</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </>
@@ -151,9 +158,10 @@ export const AppSidebar = () => {
                 <SidebarMenuButton 
                   onClick={handleLogout}
                   tooltip="Logout"
+                  className="justify-center"
                 >
-                  <LogOut className="mr-2" size={18} />
-                  <span>Logout</span>
+                  <LogOut className={state === "collapsed" ? "mr-0" : "mr-2"} size={18} />
+                  <span className={state === "collapsed" ? "hidden" : "block"}>Logout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )}
